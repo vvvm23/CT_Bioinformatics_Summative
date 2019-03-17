@@ -4,17 +4,11 @@ import sys
 # My functions here
 def align(seq_1, seq_2):
     # Set scores for alignments
-    '''score_dict = {'A': 4,
+    score_dict = {'A': 4,
                   'C': 3,
                   'G': 2,
                   'T': 1,
                   'M': -3,
-                  '-': -2}'''
-    score_dict = {'A': 1,
-                  'C': 1,
-                  'G': 1,
-                  'T': 1,
-                  'M': -1,
                   '-': -2}
     # Generate scoring and trace matrix
     # Both matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
@@ -53,11 +47,13 @@ def align(seq_1, seq_2):
                                            (score[i-1][j] + score_dict['-'], 'U'),
                                            key=lambda k: k[0])
 
+    # Traverse traceback until end found.
     print('Computing alignment via traceback..')       
     alignment = ['', '']
-    i, j = n, m
+    i, j = n, m # Current index
     direction = trace[i][j]
     while not direction == 'E':
+        # Append to front
         if direction == 'U':
             alignment[0] = seq_1[i-1] + alignment[0]
             alignment[1] = '-' + alignment[1]
@@ -72,7 +68,7 @@ def align(seq_1, seq_2):
             i -= 1
             j -= 1
 
-        direction = trace[i][j]
+        direction = trace[i][j] # Get next direction
 
     import numpy as np
     print(np.array(score).T)
