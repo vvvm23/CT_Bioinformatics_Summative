@@ -4,11 +4,17 @@ import sys
 # My functions here
 def align(seq_1, seq_2):
     # Set scores for alignments
-    score_dict = {'A': 4,
+    '''score_dict = {'A': 4,
                   'C': 3,
                   'G': 2,
                   'T': 1,
                   'M': -3,
+                  '-': -2}'''
+    score_dict = {'A': 1,
+                  'C': 1,
+                  'G': 1,
+                  'T': 1,
+                  'M': -1,
                   '-': -2}
     # Generate scoring and trace matrix
     # Both matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
@@ -30,7 +36,7 @@ def align(seq_1, seq_2):
         score[i][0] = i*score_dict['-']
         trace[i][0] = 'U'
     # Move down columns and then across rows, filling in score and trace matrix
-    print('Populating score and trace matrix')
+    print('Populating score and trace matrix..')
     for i in range(1, n+1):
         print('{0}%'.format((i-1)*100 / n), end='\r')
         sys.stdout.flush()
@@ -47,11 +53,32 @@ def align(seq_1, seq_2):
                                            (score[i-1][j] + score_dict['-'], 'U'),
                                            key=lambda k: k[0])
 
-            
-    import numpy as np
-    print(np.array(score))
-    print(np.array(trace))
+    print('Computing alignment via traceback..')       
+    alignment = ['', '']
+    i, j = n, m
+    direction = trace[i][j]
+    while not direction == 'E':
+        if direction == 'U':
+            alignment[0] = seq_1[i-1] + alignment[0]
+            alignment[1] = '-' + alignment[1]
+            i -= 1
+        elif direction == 'L':
+            alignment[0] = '-' + alignment[0]
+            alignment[1] = seq_2[j-1] + alignment[1]
+            j -= 1
+        elif direction == 'D':
+            alignment[0] = seq_1[i-1] + alignment[0]
+            alignment[1] = seq_2[j-1] + alignment[1]
+            i -= 1
+            j -= 1
 
+        direction = trace[i][j]
+
+    import numpy as np
+    print(np.array(score).T)
+    print(np.array(trace).T)
+
+    return score[n][m], alignment
 
 # Template functions: 
 def displayAlignment(alignment):
@@ -69,23 +96,17 @@ def displayAlignment(alignment):
     print('String2: '+string2+'\n\n')
 
 # Template code to open file
-'''
 file1 = open(sys.argv[1], 'r')
 seq1=file1.read()
 file1.close()
 file2 = open(sys.argv[2], 'r')
 seq2=file2.read()
-file2.close()'''
+file2.close()
 
 # Start timer
 start = time.time()
-
 # My code here
-best_score = 99999999999999999999999999999999999999999999
-best_alignment = ['A', 'A']
-
-align(list('AGACTC'), list('GATT'))
-
+best_score, best_alignment = align(seq1, seq2)
 # Stop the timer
 stop = time.time()
 time_taken=stop-start
