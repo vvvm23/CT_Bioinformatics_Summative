@@ -4,6 +4,7 @@ import sys
 # My functions here
 def align(seq_1, seq_2):
     # Set scores for alignments
+    # Could hardcode in values once debugging done
     score_dict = {'A': 4,
                   'C': 3,
                   'G': 2,
@@ -11,8 +12,9 @@ def align(seq_1, seq_2):
                   'M': -3,
                   '-': -2}
     # Generate scoring and trace matrix
-    # Both matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
-    print('Generating empty matrix..')
+    # Both maenerating empty matrix..')
+    #matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
+    #print('Geq_1)
     n = len(seq_1)
     m = len(seq_2)
     score = [[None for j in range(m+1)] for i in range(n+1)]
@@ -20,7 +22,7 @@ def align(seq_1, seq_2):
 
     # Define initial state
     # Could may redefine this using list comprehension
-    print('Setting matrix intial conditions..')
+    #print('Setting matrix intial conditions..')
     score[0][0] = 0
     trace[0][0] = 'E'
     for j in range(1, m+1):
@@ -30,10 +32,10 @@ def align(seq_1, seq_2):
         score[i][0] = i*score_dict['-']
         trace[i][0] = 'U'
     # Move down columns and then across rows, filling in score and trace matrix
-    print('Populating score and trace matrix..')
+    #print('Populating score and trace matrix..')
     for i in range(1, n+1):
-        print('{0}%'.format((i-1)*100 / n), end='\r')
-        sys.stdout.flush()
+        '''print('{0}%'.format((i-1)*100 / n), end='\r')
+        sys.stdout.flush()'''
         for j in range(1, m+1):
             if not seq_1[i-1] == seq_2[j-1]:
                 score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict['M'], 'D'),
@@ -48,10 +50,11 @@ def align(seq_1, seq_2):
                                            key=lambda k: k[0])
 
     # Traverse traceback until end found.
-    print('Computing alignment via traceback..')       
+    #print('Computing alignment via traceback..')       
     alignment = ['', '']
     i, j = n, m # Current index
     direction = trace[i][j]
+    # Maybe here loop until either i or j is 0. Then immediately append remainder of string and gaps.
     while not direction == 'E':
         # Append to front
         if direction == 'U':
@@ -70,9 +73,9 @@ def align(seq_1, seq_2):
 
         direction = trace[i][j] # Get next direction
 
-    import numpy as np
+    '''import numpy as np
     print(np.array(score).T)
-    print(np.array(trace).T)
+    print(np.array(trace).T)'''
 
     return score[n][m], alignment
 
