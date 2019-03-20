@@ -24,8 +24,6 @@ def WPGMA(path):
         s_label = [column_headers[s_index[0]], column_headers[s_index[1]]]
         #matrix[s_index[1], s_index[0]] = np.nan
 
-        print(s_index)
-        print()
         new_row = np.array([(len(column_headers[s_index[0]])*matrix[s_index[0], j] + len(column_headers[s_index[1]])*matrix[s_index[1], j])\
                     /(len(column_headers[s_index[0]] + column_headers[s_index[1]]))\
                     if not j == s_index[0] else np.nan for j in [_ for _ in range(matrix.shape[0]) if not _ == s_index[1]]])
@@ -50,14 +48,17 @@ def WPGMA(path):
         print(matrix)
     
     new_node = column_headers[0] + column_headers[1]
-    tree.add_node(new_node)
+    tree.add_node(new_node, pos=((tree.node[column_headers[0]]['pos'][0] + tree.node[column_headers[1]]['pos'][0])/2 + 2, tree.node[column_headers[0]]['pos'][1] + 2))
     tree.add_edge(new_node, column_headers[0])
     tree.add_edge(new_node, column_headers[1])
 
-    nx.draw_networkx(tree, pos=[n['pos'] for n in tree])
+    nx.draw_networkx(tree, pos=nx.get_node_attributes(tree, 'pos'))
+    plt.axis('off')
     plt.show()
 
 start_time = time.time()
+WPGMA('matrix1.txt')
+WPGMA('matrix2.txt')
 WPGMA('matrix3.txt')
 end_time = time.time()
 print('Time taken {0}'.format(end_time - start_time))
