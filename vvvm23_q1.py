@@ -33,21 +33,21 @@ def align(seq_1, seq_2):
         trace[i][0] = 'U'
     # Move down columns and then across rows, filling in score and trace matrix
     #print('Populating score and trace matrix..')
+    k = lambda k: k[0]
     for i in range(1, n+1):
-        '''print('{0}%'.format((i-1)*100 / n), end='\r')
-        sys.stdout.flush()'''
+        print('{0}%'.format((i-1)*100 / n), end='\r')
+        sys.stdout.flush()
         for j in range(1, m+1):
             if not seq_1[i-1] == seq_2[j-1]:
                 score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict['M'], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
-                                           key=lambda k: k[0])
-
+                                           key=k)
             else:
                 score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
-                                           key=lambda k: k[0])
+                                           key=k)
 
     # Traverse traceback until end found.
     #print('Computing alignment via traceback..')       
@@ -58,25 +58,26 @@ def align(seq_1, seq_2):
     while not direction == 'E':
         # Append to front
         if direction == 'U':
-            alignment[0] = seq_1[i-1] + alignment[0]
-            alignment[1] = '-' + alignment[1]
             i -= 1
+            alignment[0] += seq_1[i]
+            alignment[1] += '-'
         elif direction == 'L':
-            alignment[0] = '-' + alignment[0]
-            alignment[1] = seq_2[j-1] + alignment[1]
             j -= 1
+            alignment[0] += '-'
+            alignment[1] += seq_2[j]
         elif direction == 'D':
-            alignment[0] = seq_1[i-1] + alignment[0]
-            alignment[1] = seq_2[j-1] + alignment[1]
             i -= 1
             j -= 1
+            alignment[0] += seq_1[i]
+            alignment[1] += seq_2[j]
 
         direction = trace[i][j] # Get next direction
 
     '''import numpy as np
-    print(np.array(score).T)
-    print(np.array(trace).T)'''
+    print(np.array(score))
+    print(np.array(trace))'''
 
+    alignment = list(map(lambda x: x[::-1], alignment))
     return score[n][m], alignment
 
 # Template functions: 
