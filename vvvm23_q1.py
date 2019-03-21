@@ -35,18 +35,26 @@ def align(seq_1, seq_2):
     #print('Populating score and trace matrix..')
     k = lambda k: k[0]
     for i in range(1, n+1):
-        print('{0}%'.format((i-1)*100 / n), end='\r')
-        sys.stdout.flush()
+        '''print('{0}%'.format((i-1)*100 / n), end='\r')
+        sys.stdout.flush()'''
         for j in range(1, m+1):
             if not seq_1[i-1] == seq_2[j-1]:
-                score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict['M'], 'D'),
+                '''score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict['M'], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
+                                           key=k)'''
+                score[i][j], trace[i][j] = max((score[i-1][j-1] -3, 'D'),
+                                           (score[i][j-1] -2, 'L'),
+                                           (score[i-1][j] -2, 'U'),
                                            key=k)
             else:
-                score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
+                '''score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
+                                           key=k)'''
+                score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
+                                           (score[i][j-1] -2, 'L'),
+                                           (score[i-1][j] -2, 'U'),
                                            key=k)
 
     # Traverse traceback until end found.
