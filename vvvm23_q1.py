@@ -8,9 +8,7 @@ def align(seq_1, seq_2):
     score_dict = {'A': 4,
                   'C': 3,
                   'G': 2,
-                  'T': 1,
-                  'M': -3,
-                  '-': -2}
+                  'T': 1}
 
     # Generate scoring and trace matrix
     # Both maenerating empty matrix..')
@@ -26,14 +24,15 @@ def align(seq_1, seq_2):
     # Define initial state
     # Could may redefine this using list comprehension
     #print('Setting matrix intial conditions..')
+    # -1 E; 0 U; 1 D; 2 L;
     score[0][0] = 0
-    trace[0][0] = 'E'
+    trace[0][0] = -1
     for j in range(1, m+1):
-        score[0][j] = j*score_dict['-']
-        trace[0][j] = 'L'
+        score[0][j] = j*-2
+        trace[0][j] = 2
     for i in range(1, n+1):
-        score[i][0] = i*score_dict['-']
-        trace[i][0] = 'U'
+        score[i][0] = i*-2
+        trace[i][0] = 0
     # Move down columns and then across rows, filling in score and trace matrix
     #print('Populating score and trace matrix..')
     k = lambda k: k[0]
@@ -46,18 +45,18 @@ def align(seq_1, seq_2):
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
                                            key=k)'''
-                score[i][j], trace[i][j] = max((score[i-1][j-1] -3, 'D'),
-                                           (score[i][j-1] -2, 'L'),
-                                           (score[i-1][j] -2, 'U'),
+                score[i][j], trace[i][j] = max((score[i-1][j-1] -3, 1),
+                                           (score[i][j-1] -2, 2),
+                                           (score[i-1][j] -2, 0),
                                            key=k)
             else:
                 '''score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
                                            key=k)'''
-                score[i][j], trace[i][j] = max((score[i-1][j-1] + i_seq_1[i-1], 'D'),
-                                           (score[i][j-1] -2, 'L'),
-                                           (score[i-1][j] -2, 'U'),
+                score[i][j], trace[i][j] = max((score[i-1][j-1] + i_seq_1[i-1], 1),
+                                           (score[i][j-1] -2, 2),
+                                           (score[i-1][j] -2, 0),
                                            key=k)
 
     # Traverse traceback until end found.
@@ -66,17 +65,17 @@ def align(seq_1, seq_2):
     i, j = n, m # Current index
     direction = trace[i][j]
     # Maybe here loop until either i or j is 0. Then immediately append remainder of string and gaps.
-    while not direction == 'E':
+    while not direction == -1:
         # Append to front
-        if direction == 'U':
+        if direction == 0:
             i -= 1
             alignment[0] += seq_1[i]
             alignment[1] += '-'
-        elif direction == 'L':
+        elif direction == 2:
             j -= 1
             alignment[0] += '-'
             alignment[1] += seq_2[j]
-        elif direction == 'D':
+        elif direction == 1:
             i -= 1
             j -= 1
             alignment[0] += seq_1[i]
