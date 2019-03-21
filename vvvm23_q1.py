@@ -14,8 +14,8 @@ def align(seq_1, seq_2):
     # Both maenerating empty matrix..')
     #matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
     #print('Geq_1)
-    i_seq_1 = [score_dict[b] for b in seq_1]
-    i_seq_2 = [score_dict[b] for b in seq_2]
+    i_seq_1 = tuple(score_dict[b] for b in seq_1)
+    i_seq_2 = tuple(score_dict[b] for b in seq_2)
     n = len(seq_1)
     m = len(seq_2)
     score = [[None for j in range(m+1)] for i in range(n+1)]
@@ -35,7 +35,6 @@ def align(seq_1, seq_2):
         trace[i][0] = 0
     # Move down columns and then across rows, filling in score and trace matrix
     #print('Populating score and trace matrix..')
-    k = lambda k: k[0]
     for i in range(1, n+1):
         '''print('{0}%'.format((i-1)*100 / n), end='\r')
         sys.stdout.flush()'''
@@ -47,8 +46,7 @@ def align(seq_1, seq_2):
                                            key=k)'''
                 score[i][j], trace[i][j] = max((score[i-1][j-1] -3, 1),
                                            (score[i][j-1] -2, 2),
-                                           (score[i-1][j] -2, 0),
-                                           key=k)
+                                           (score[i-1][j] -2, 0))
             else:
                 '''score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
@@ -56,8 +54,7 @@ def align(seq_1, seq_2):
                                            key=k)'''
                 score[i][j], trace[i][j] = max((score[i-1][j-1] + i_seq_1[i-1], 1),
                                            (score[i][j-1] -2, 2),
-                                           (score[i-1][j] -2, 0),
-                                           key=k)
+                                           (score[i-1][j] -2, 0))
 
     # Traverse traceback until end found.
     #print('Computing alignment via traceback..')       
@@ -69,17 +66,26 @@ def align(seq_1, seq_2):
         # Append to front
         if direction == 0:
             i -= 1
-            alignment[0] += seq_1[i]
+            '''alignment[0] += seq_1[i]
             alignment[1] += '-'
+            '''
+            alignment[0] = ''.join((alignment[0], seq_1[i]))
+            alignment[1] = ''.join((alignment[0], '-'))
         elif direction == 2:
             j -= 1
-            alignment[0] += '-'
+            '''alignment[0] += '-'
             alignment[1] += seq_2[j]
+            '''
+            alignment[0] = ''.join((alignment[0], '-'))
+            alignment[1] = ''.join((alignment[1], seq_2[j]))
         elif direction == 1:
             i -= 1
             j -= 1
-            alignment[0] += seq_1[i]
+            '''alignment[0] += seq_1[i]
             alignment[1] += seq_2[j]
+            '''
+            alignment[0] = ''.join((alignment[0], seq_1[i]))
+            alignment[1] = ''.join((alignment[1], seq_2[j]))
 
         direction = trace[i][j] # Get next direction
 
