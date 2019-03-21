@@ -68,24 +68,15 @@ def align(seq_1, seq_2):
             i -= 1
             alignment[0] += seq_1[i]
             alignment[1] += '-'
-            '''
-            alignment[0] = ''.join((alignment[0], seq_1[i]))
-            alignment[1] = ''.join((alignment[0], '-'))'''
         elif direction == 2:
             j -= 1
             alignment[0] += '-'
             alignment[1] += seq_2[j]
-            '''
-            alignment[0] = ''.join((alignment[0], '-'))
-            alignment[1] = ''.join((alignment[1], seq_2[j]))'''
         elif direction == 1:
             i -= 1
             j -= 1
             alignment[0] += seq_1[i]
             alignment[1] += seq_2[j]
-            '''
-            alignment[0] = ''.join((alignment[0], seq_1[i]))
-            alignment[1] = ''.join((alignment[1], seq_2[j]))'''
 
         direction = trace[i][j] # Get next direction
 
