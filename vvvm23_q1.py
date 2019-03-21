@@ -11,10 +11,13 @@ def align(seq_1, seq_2):
                   'T': 1,
                   'M': -3,
                   '-': -2}
+
     # Generate scoring and trace matrix
     # Both maenerating empty matrix..')
     #matrices will be n+1 X m+1 where n is length of seq_1 and m is length of seq_2
     #print('Geq_1)
+    i_seq_1 = [score_dict[b] for b in seq_1]
+    i_seq_2 = [score_dict[b] for b in seq_2]
     n = len(seq_1)
     m = len(seq_2)
     score = [[None for j in range(m+1)] for i in range(n+1)]
@@ -38,7 +41,7 @@ def align(seq_1, seq_2):
         '''print('{0}%'.format((i-1)*100 / n), end='\r')
         sys.stdout.flush()'''
         for j in range(1, m+1):
-            if not seq_1[i-1] == seq_2[j-1]:
+            if not i_seq_1[i-1] == i_seq_2[j-1]:
                 '''score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict['M'], 'D'),
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
@@ -52,7 +55,7 @@ def align(seq_1, seq_2):
                                            (score[i][j-1] + score_dict['-'], 'L'),
                                            (score[i-1][j] + score_dict['-'], 'U'),
                                            key=k)'''
-                score[i][j], trace[i][j] = max((score[i-1][j-1] + score_dict[seq_1[i-1]], 'D'),
+                score[i][j], trace[i][j] = max((score[i-1][j-1] + i_seq_1[i-1], 'D'),
                                            (score[i][j-1] -2, 'L'),
                                            (score[i-1][j] -2, 'U'),
                                            key=k)
