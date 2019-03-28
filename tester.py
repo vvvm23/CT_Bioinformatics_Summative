@@ -19,8 +19,7 @@ for i in range(0, len(lengths)):
 				file1 = "length" + str(lengths[i]) + "_" + labels[l] + ".txt"
 				file2 = "length" + str(lengths[j]) + "_" + labels[m] + ".txt"
 
-				print("python " + PYTHON + " " + TESTSEQUENCES + file1 + " " + TESTSEQUENCES + file2 + "")
-				output = subprocess.Popen("python " + PYTHON + " " + TESTSEQUENCES + file1 + " " + TESTSEQUENCES + file2 + "", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				output = subprocess.Popen("C:\Python27\Python.exe " + PYTHON + " " + TESTSEQUENCES + file1 + " " + TESTSEQUENCES + file2 + "", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 				out, err = output.communicate()
 
 				print(file1, file2, out.split("\n")[1][12:][:-3])

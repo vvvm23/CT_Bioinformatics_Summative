@@ -5,14 +5,11 @@ import time
 import sys
 
 def WPGMA(path):
-    print('Reading from file..')
     file = open(path, 'r')
     contents = file.read().splitlines()
     file.close()
     column_headers = contents[0].split(' ')[1:]
     matrix = np.array([[int(x) if not x == '0' else np.nan for x in contents[y].split(' ')[1:]] for y in range(1, len(contents))]) # Quicker to maybe map int?
-    print('Read complete. Displaying data:')
-    print('Generating initial tree..')
     tree = nx.DiGraph()
     for n in range(len(column_headers)):
         tree.add_node(column_headers[n], pos=(2*(n+1), 2))
@@ -22,7 +19,6 @@ def WPGMA(path):
     while matrix.shape[0] > 2:
         s_index = np.unravel_index(np.nanargmin(matrix), matrix.shape) # Is there a better way to find index of smallest element?
         s_label = [column_headers[s_index[0]], column_headers[s_index[1]]]
-        #matrix[s_index[1], s_index[0]] = np.nan
 
         new_row = np.array([(len(column_headers[s_index[0]])*matrix[s_index[0], j] + len(column_headers[s_index[1]])*matrix[s_index[1], j])\
                     /(len(column_headers[s_index[0]] + column_headers[s_index[1]]))\
@@ -38,8 +34,6 @@ def WPGMA(path):
         matrix = np.delete(matrix, (s_index[1]), axis=0)
         matrix = np.delete(matrix, (s_index[1]), axis=1)
 
-        #np.insert(matrix, s_index[0], new_row[1:], axis=1)
-        #np.insert(matrix, s_index[0], new_row, axis=0)
         matrix[s_index[0], :] = new_row
         matrix[:, s_index[0]] = new_row
         column_headers = [_ for _ in column_headers if not _ in s_label and column_headers.index(_) < s_index[0]] + [column_headers[s_index[0]] + column_headers[s_index[1]]] + [_ for _ in column_headers if not _ in s_label and column_headers.index(_) > s_index[0]]
